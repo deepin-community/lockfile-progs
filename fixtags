@@ -1,0 +1,14 @@
+#!/bin/bash
+
+set -uxeo pipefail
+
+for tag in $(git tag -l "debian/*"); do
+    ver=$(echo "$tag" | cut -b 8-)
+    adate=$(git show -s --pretty=%aD "$tag")
+    cdate=$(git show -s --pretty=%cD "$tag")
+    ref=$(git show -s --pretty=%H "$tag")
+    export GIT_AUTHOR_DATE="$adate"
+    export GIT_COMMITTER_DATE="$cdate"
+    echo "tag $ver | $adate | $cdate"
+    git tag -f -sm "$ver" "$ver" "$ref"
+done
